@@ -1,4 +1,5 @@
 <?php
+session_start();
 include __DIR__ .'/functions/functions.php';
 
 // $errorClass = "is-invalid";
@@ -19,8 +20,10 @@ if(isset($_GET['numberPsw']) && !empty($_GET['numberPsw'])){
         $result = $password;
     };
     $password = str_shuffle($password);
-        var_dump($password);
+    var_dump($password);
 
+    $_SESSION['password'] = $password;
+    header('Location: ./result.php');
 }
 
 include __DIR__ .'/partials/header.php';
@@ -32,77 +35,69 @@ include __DIR__ .'/partials/header.php';
         <h2 class="text-white text-center">Genera una password sicura</h2>
     </header>
     <main class="container m-auto">
-        <section>
-            <!-- SEZIONE PER MESSAGGIO -->
-            <?php  
-    if(isset($result) && $result){
-        if($result){ ?>
-            <div class="alert alert-success text-center">
-                <h3 class="text-center">Password generata: <b><?php echo $password ?></b></h3>
-                <p>La tua password ha <?php echo strlen($password) ?> caratteri</p>
-            </div>
-            <?php } else { ?>
-            <div class="alert alert-danger">
-                Errore <br />
-                Formato non corretto
-            </div>
-            <?php }} ?>
-        </section>
+
+        <!-- SEZIONE per eventuale MESSAGGIO -->
+
         <section class="bg-white rounded-5 p-5">
             <form action="index.php" method="GET" name="numbGenForm">
                 <div class="row g-0">
+                    <!-- Lunghezza password -->
                     <div class="col-6 my-2">
                         <div>Lunghezza password:</div>
                     </div>
                     <div class="col-6 my-2">
-                        <input type="number" class="w-100" id="numberPsw" name="numberPsw" value="10" min="10" max="20"
-                            required>
+                        <input type="number" class="w-100" id="numberPsw" name="numberPsw" value="
+                            <?php isset($_GET['numberPsw']) ? $_GET['numberPsw'] : '' ?>" min="10" max="20" required>
                     </div>
+                    <!-- Ripetizioni di uno o più caratteri -->
                     <div class="col-6 my-2">
                         <div>Consenti ripetizioni di uno o più caratteri:</div>
                     </div>
                     <div class="col-6 my-2">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                            <label class="form-check-label" for="flexRadioDefault1">
+                            <input class="form-check-input" type="radio" name="repet" id="repet">
+                            <label class="form-check-label" for="repet">
                                 Si
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
-                                checked>
-                            <label class="form-check-label" for="flexRadioDefault2">
+                            <input class="form-check-input" type="radio" name="repet" id="no-repet" checked>
+                            <label class="form-check-label" for="repet">
                                 No
                             </label>
                         </div>
                     </div>
+                    <!-- Selezione dei caratteri da usare -->
                     <div class="col-6 my-2">
                         <!-- VUOTO -->
                     </div>
                     <div class="col-6 my-2">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="Lettere" id="flexCheckDefault"
-                                checked>
-                            <label class="form-check-label" for="flexCheckDefault">
+                            <input type="checkbox" name="elements[]" class="form-check-input" type="checkbox"
+                                value="alfabeto" checked>
+                            <label class="form-check-label" for="">
                                 Lettere
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="Numeri" id="flexCheckChecked">
-                            <label class="form-check-label" for="flexCheckChecked">
+                            <input type="checkbox" name="elements[]" class="form-check-input" type="checkbox"
+                                value="numeri">
+                            <label class="form-check-label" for="">
                                 Numeri
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="Simboli" id="flexCheckChecked">
-                            <label class="form-check-label" for="flexCheckChecked">
+                            <input type="checkbox" name="elements[]" class="form-check-input" type="checkbox"
+                                value="simboli">
+                            <label class="form-check-label" for="">
                                 Simboli
                             </label>
                         </div>
                     </div>
+                    <!-- bottoni di invio, reset e annullo -->
                     <div class="col-12 my-2">
                         <button type="submit" class="btn btn-primary">Invia</button>
-                        <button type="reset" class="btn btn-secondary">Annulla</button>
+                        <button type="reset" class="btn btn-secondary">Reset</button>
                     </div>
                 </div>
             </form>
